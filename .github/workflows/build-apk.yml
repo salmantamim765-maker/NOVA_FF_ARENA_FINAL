@@ -39,11 +39,21 @@ jobs:
           echo "android.builtInKotlin=false" >> android/gradle.properties
           echo "org.gradle.jvmargs=-Xmx4096M" >> android/gradle.properties
           echo "android.useAndroidX=true" >> android/gradle.properties
-          
+          - name: Fix Flutter Maven repository
+          run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("android/build.gradle")
+          s = p.read_text()
+          repo = 'maven { url uri(System.getenv("FLUTTER_ROOT") + "/bin/cache/artifacts/engine") }'
+          if repo not in s:
+          s = s.replace("repositories {", "repositories {\n        " + repo, 1)
+          p.write_text(s)
+          PY
            
       
-      - name: Install dependencies
-        run: flutter pub get
+          - name: Install dependencies
+           run: flutter pub get
 
       - name: Build APK
         run: flutter build apk --debug
