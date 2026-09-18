@@ -37,7 +37,8 @@ jobs:
         run: |
           echo "android.newDsl=false" >> android/gradle.properties
           echo "android.builtInKotlin=false" >> android/gradle.properties
-
+          echo "org.gradle.jvmargs=-Xmx4096M" >> android/gradle.properties
+          echo "android.useAndroidX=true" >> android/gradle.properties
       - name: Install dependencies
         run: flutter pub get
 
