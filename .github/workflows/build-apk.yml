@@ -1,3 +1,4 @@
+
 name: Build APK
 
 on:
@@ -16,15 +17,26 @@ jobs:
 
       - name: Extract project ZIP
         run: |
-          unzip -q NOVA_FF_ARENA_FIXED.zip
+          unzip -q NOVA_FF_ARENA_PERFECT_BUILD.zip
           cp -r NOVA_FF_ARENA_FINAL/. .
           rm -rf NOVA_FF_ARENA_FINAL
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '3.41.6'
           cache: true
+
+      - name: Fix Android Gradle compatibility
+        run: |
+          echo "android.newDsl=false" >> android/gradle.properties
+          echo "android.builtInKotlin=false" >> android/gradle.properties
 
       - name: Install dependencies
         run: flutter pub get
